@@ -94,7 +94,7 @@ def teardown_request(exception):
 # see for routing: http://flask.pocoo.org/docs/0.10/quickstart/#routing
 # see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
 #
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
   """
   request is a special object that Flask provides to access web request information:
@@ -106,17 +106,34 @@ def index():
   See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
   """
 
-  # DEBUG: this is debugging code to see what request looks like
-  print(request.args)
+  print(request.form)
+  if request.method == "POST":
+    if (request.form['year'] is not None and request.form['year'] is not ''):
+        query =  ''
+      
 
+        if (request.form['macrostat'] == 'gross_earning') :
+            query = "SELECT city_id, year, gross_earning from general_compensation"
 
+        query = query + " WHERE year={}".format(int(request.form['year']))
+
+        print(query)
+        cursor = g.conn.execute(query)
+        for result in cursor:
+            print(result)
+
+        ##TODO: render index.html differently with the returned data
+    else:
+        ##TODO: this needs to be the default case
+        pass
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT name FROM test")
-  names = []
+  cursor = g.conn.execute("SELECT DISTINCT year FROM general_compensation")
+  years = []
   for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
+    years.append(result[0])  # can also be accessed using result[0]
+  
   cursor.close()
 
   #
@@ -125,33 +142,9 @@ def index():
   # (you can think of it as simple PHP)
   # documentation: https://realpython.com/blog/python/primer-on-jinja-templating/
   #
-  # You can see an example template in templates/index.html
-  #
-  # context are the variables that are passed to the template.
-  # for example, "data" key in the context variable defined below will be 
-  # accessible as a variable in index.html:
-  #
-  #     # will print: [u'grace hopper', u'alan turing', u'ada lovelace']
-  #     <div>{{data}}</div>
-  #     
-  #     # creates a <div> tag for each element in data
-  #     # will print: 
-  #     #
-  #     #   <div>grace hopper</div>
-  #     #   <div>alan turing</div>
-  #     #   <div>ada lovelace</div>
-  #     #
-  #     {% for n in data %}
-  #     <div>{{n}}</div>
-  #     {% endfor %}
-  #
-  context = dict(data = names)
 
+  context = dict(years = years)
 
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
   return render_template("index.html", **context)
 
 #

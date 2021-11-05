@@ -1,3 +1,28 @@
+let refreshButton, yearSelection, macroStatSelection; 
+
+let queryString = 
+window.addEventListener('load', function () {
+  refreshButton= document.getElementById('refresh');
+  macroStatSelection = document.getElementById('macrostat-selection');
+  yearSelection = document.getElementById('year-selection')
+
+  /*refreshButton.onclick = refresh;*/
+  //macroStatSelection.onchange = updateQueryString();
+  //yearSelection.onchange = updateQueryString();
+})
+
+ 
+
+
+
+
+function refresh() {
+  console.log("refresh")
+    //updateQuery();
+    //draw();
+}
+
+
 anychart.onDocumentReady(function () {
 
 	var map = anychart.map();

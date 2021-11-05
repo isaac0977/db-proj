@@ -80,9 +80,8 @@ body.application {
   margin: 0 1%;
 }
 
-.radius input,
-.radius select {
-  width: 48%;
+.year select {
+  width: 80%;
 }
 
 .tool input,

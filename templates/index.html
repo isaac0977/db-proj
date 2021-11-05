@@ -69,36 +69,42 @@
 
   <div id="app-wrapper">
     <div id="app-toolbar">
-      <form action="" onsubmit="return false;" method="post">
+      <form method="post" id="form">
         <div class="tools">
-          <div class="tool radius">
-            <h5>Query Radius</h5>
-            <input type="number" id="radius-value" class="form-control" value="">
-            <select class="form-control" id="radius-suffix">
+          <div class="tool year">
+            <h5>Year</h5>
+            <select name="year" class="form-control" id="year-selection">
+              <option></option>
+              {% for year in years %}
+              <option value="{{year}}">{{year}}</option>
+              {% endfor %}
+            <!-- <input type="number" id="radius-value" class="form-control" value=""> -->
+            <!-- <select class="form-control" id="radius-suffix">
               <option></option>
               <option value="mi">mi</option>
               <option value="km">km</option>
+            </select> -->
+          </select>
+          </div>
+          <div class="tool macrostat">
+            <h5>City Statistics</h5>
+            <select name="macrostat" class="form-control" id="macrostat-selection">
+              <option></option>
+              <option value="gross_earning">Gross Earning</option>
             </select>
           </div>
-          <div class="tool coordinates">
-            <h5>Latitude</h5>
-            <input type="number" step="any" id="coordinates-lat" class="form-control" placeholder="Latitude">
-          </div>
-          <div class="tool coordinates">
-            <h5>Longitude</h5>
-            <input type="number" step="any" id="coordinates-lng" class="form-control" placeholder="Longitude">
-          </div>
-          <div class="tool timeframe">
+          <!-- <div class="tool timeframe">
             <h5>Start time</h5>
             <input type="date" id="timeframe-start" class="form-control" placeholder="mm/dd/yyyy">
           </div>
           <div class="tool timeframe">
             <h5>End time</h5>
             <input type="date" id="timeframe-end" class="form-control" placeholder="mm/dd/yyyy">
-          </div>
+          </div> -->
           <div class="tool">
             <h5>Keen IO &#9825's Mapbox</h5>
-            <button id="refresh" class="btn btn-primary btn-block">Refresh</button>
+            <!-- <button id="refresh" class="btn btn-primary btn-block">Refresh</button> -->
+            <input type="submit" name="refresh" value="Refresh" id="refresh" class="btn btn-primary btn-block"/>
           </div>
         </div>
       </form>

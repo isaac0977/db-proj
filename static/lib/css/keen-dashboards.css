@@ -426,8 +426,6 @@ small,
   height: auto;
 }
 
-/* FORM_CONTROL */
-
 .form-control {
   display: block;
   width: 100%;
@@ -450,6 +448,7 @@ button {
 }
 
 .btn {
+  overflow: visible;
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
