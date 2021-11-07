@@ -52,6 +52,15 @@ engine.execute("""CREATE TABLE IF NOT EXISTS test (
 );""")
 engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
+def rename_keys(row):
+  if ('x_coordinates' in row):
+    row['long'] = row.pop('x_coordinates')
+  if ('y_coordinates' in row):
+    row['lat'] = row.pop('y_coordinates')
+  if ('gross_earning' in row):
+    row['size'] = row.pop('gross_earning')
+
+  return row
 
 @app.before_request
 def before_request():
@@ -107,43 +116,39 @@ def index():
   """
 
   print(request.form)
-  if request.method == "POST":
-    if (request.form['year'] is not None and request.form['year'] is not ''):
-        query =  ''
-      
 
-        if (request.form['macrostat'] == 'gross_earning') :
-            query = "SELECT city_id, year, gross_earning from general_compensation"
-
-        query = query + " WHERE year={}".format(int(request.form['year']))
-
-        print(query)
-        cursor = g.conn.execute(query)
-        for result in cursor:
-            print(result)
-
-        ##TODO: render index.html differently with the returned data
-    else:
-        ##TODO: this needs to be the default case
-        pass
-  #
-  # example of a database query
-  #
   cursor = g.conn.execute("SELECT DISTINCT year FROM general_compensation")
   years = []
   for result in cursor:
     years.append(result[0])  # can also be accessed using result[0]
   
   cursor.close()
-
-  #
-  # Flask uses Jinja templates, which is an extension to HTML where you can
-  # pass data to a template and dynamically generate HTML based on the data
-  # (you can think of it as simple PHP)
-  # documentation: https://realpython.com/blog/python/primer-on-jinja-templating/
-  #
-
   context = dict(years = years)
+
+
+  if request.method == "POST":
+    if (request.form['year'] is not None and request.form['year'] is not ''):
+        query =  ''
+      
+
+        if (request.form['macrostat'] == 'gross_earning') :
+            query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, gross_earning 
+            from general_compensation g, city c WHERE g.city_id=c.city_id'''
+
+        query = query + " and year={}".format(int(request.form['year']))
+
+        cursor = g.conn.execute(query)
+        data = []
+        for result in cursor:
+          data.append(rename_keys(dict(result)))
+        cursor.close()
+        context['query_data'] = data
+        return render_template("index.html", **context)
+
+        ##TODO: render index.html differently with the returned data
+    else:
+        ##TODO: this needs to be the default case
+        pass
 
   return render_template("index.html", **context)
 

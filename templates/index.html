@@ -59,8 +59,14 @@
   <!-- anymap -->
   <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js" type="text/javascript"></script>
   <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-map.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js" type="text/javascript"></script>
   <script src="https://cdn.anychart.com/geodata/2.1.1/countries/united_states_of_america/united_states_of_america.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/drawMap.js') }}"></script>
+  <script type="text/javascript">
+    myVar = drawMapWithData({{query_data|default("")|tojson}})
+    
+    
+  </script>
 
 
 </head>
