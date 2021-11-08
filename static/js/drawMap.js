@@ -31,16 +31,30 @@ function drawMapWithData(data) {
     map.geoData(anychart.maps['united_states_of_america']);
 
     var series = map.bubble(data);
-    console.log(data)
+    console.log('data1' in data[0])
     series.labels().format("{%city_name}");
-    series.tooltip().format("{%size}");
+    if ('data1' in data[0]){
+      series.tooltip().format("Data1: {%data1}, Data2: {%data2}");
+    }
+    else {
+      series.tooltip().format("{%size}");
+    }
     series.tooltip().titleFormat("{%city_name}");
 
     map.maxBubbleSize(45);
     map.minBubbleSize(15);
 
-    map.container('map');
+    map.container('app-maparea');
     map.draw();
+
+
+    
+
+
+
+    
+
+
    })
   } else {
     anychart.onDocumentReady(function () {
@@ -116,7 +130,7 @@ function drawMapWithData(data) {
 
 
     // set the container
-    map.container('map');
+    map.container('app-maparea');
     map.draw();
   });
   }

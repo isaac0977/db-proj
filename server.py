@@ -57,8 +57,6 @@ def rename_keys(row):
     row['long'] = row.pop('x_coordinates')
   if ('y_coordinates' in row):
     row['lat'] = row.pop('y_coordinates')
-  if ('gross_earning' in row):
-    row['size'] = row.pop('gross_earning')
 
   return row
 
@@ -132,14 +130,40 @@ def index():
       
 
         if (request.form['macrostat'] == 'gross_earning') :
-            query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, gross_earning 
+            query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, gross_earning as size
             from general_compensation g, city c WHERE g.city_id=c.city_id'''
+            query = query + " and year={}".format(int(request.form['year']))
 
-        query = query + " and year={}".format(int(request.form['year']))
+        if ('macrostat2' in request.form and request.form['macrostat2'] != ''):
+            if (request.form['macrostat2'] == 'avg_unemployment_rate'):
+    
+              query = '''
+              SELECT t.city_id, city_name, x_coordinates, y_coordinates, gross_earning as data1, avg_unemployment_rate data2, gross_earning/avg_unemployment_rate as size
+              from city 
+              INNER JOIN
+              (
+                SELECT c.city_id, gross_earning, avg_unemployment_rate
+                FROM 
+                  general_compensation
+                  INNER JOIN (
+                    SELECT 
+                    city_id,
+                    year,
+                    avg_unemployment_rate
+                  FROM 
+                    employment
+                  WHERE
+                    year={}
+                ) as c on general_compensation.city_id = c.city_id and general_compensation.year = c.year
+                ) as t on t.city_id = city.city_id
+              '''.format(int(request.form['year']))
 
+        
+        print(query)
         cursor = g.conn.execute(query)
         data = []
         for result in cursor:
+          print(dict(result))
           data.append(rename_keys(dict(result)))
         cursor.close()
         context['query_data'] = data
