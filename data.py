@@ -24,14 +24,14 @@ engine = create_engine(DATABASEURI)
 # adding new data for each year 2010 - 2018
 def populate_employment_years():
     #insert data for each city for each year
-    counter = 11
-    incre = 1.5
-    for year in range(2010,2020):
+    counter = 112
+    # incre = 1.5
+    for year in range(2020,2021):
         for i in range(1,11):
             counter +=1
             # make it look like unemployment falling to about the correct amount rn (4%)
-            incre /= 1.01
-            rate = random.uniform(0.06,0.07) * incre
+            incre = 1.01
+            rate = random.uniform(0.07,0.09) * incre
             print(year,i,rate)
             query = """INSERT INTO employment (employment_stat_id, city_id, year, avg_unemployment_rate) VALUES ('{stat_id}','{id}','{year}','{rate}' ) ;""".format(stat_id = counter, id=i, year = year, rate = rate)
             engine.execute(query) 
@@ -155,10 +155,22 @@ def populate_rent_years():
 
 # TODO - run appropriate insert queries after modifying above / as necessary
 # ALREADY DONE
-# populate_employment_years()
 # populate_comp_years()
 # populate_spending_years()
 # populate_house_years()
+# populate_rent_years()
+# populate_employment_years()
 
 # RUNNING HERE
-populate_rent_years()
+
+
+
+def teardown_request(exception):
+  """
+  At the end of the web request, this makes sure to close the database connection.
+  If you don't, the database could run out of memory!
+  """
+  try:
+    g.conn.close()
+  except Exception as e:
+    pass

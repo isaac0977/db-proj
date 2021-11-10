@@ -45,12 +45,12 @@ engine = create_engine(DATABASEURI)
 #
 # Example of running queries in your database
 # Note that this will probably not work if you already have a table named 'test' in your database, containing meaningful data. This is only an example showing you how to run queries in your database using SQLAlchemy.
-#
-engine.execute("""CREATE TABLE IF NOT EXISTS test (
-  id serial,
-  name text
-);""")
-engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
+# #
+# engine.execute("""CREATE TABLE IF NOT EXISTS test (
+#   id serial,
+#   name text
+# );""")
+# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 def rename_keys(row):
   if ('x_coordinates' in row):
@@ -132,6 +132,21 @@ def index():
         if (request.form['macrostat'] == 'gross_earning') :
             query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, gross_earning as size
             from general_compensation g, city c WHERE g.city_id=c.city_id'''
+            query = query + " and year={}".format(int(request.form['year']))
+        
+        if (request.form['macrostat'] == 'employment') :
+            query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, avg_unemployment_rate as size
+            from employment g, city c WHERE g.city_id=c.city_id'''
+            query = query + " and year={}".format(int(request.form['year']))
+          
+        if (request.form['macrostat'] == 'house_purchase') :
+            query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, price as size
+            from house_purchase g, city c WHERE g.city_id=c.city_id'''
+            query = query + " and year={}".format(int(request.form['year']))
+        
+        if (request.form['macrostat'] == 'house_rent') :
+            query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, rent_price as size
+            from house_rent g, city c WHERE g.city_id=c.city_id'''
             query = query + " and year={}".format(int(request.form['year']))
 
         if ('macrostat2' in request.form and request.form['macrostat2'] != ''):
