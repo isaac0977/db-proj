@@ -45,12 +45,12 @@ engine = create_engine(DATABASEURI)
 #
 # Example of running queries in your database
 # Note that this will probably not work if you already have a table named 'test' in your database, containing meaningful data. This is only an example showing you how to run queries in your database using SQLAlchemy.
-#
-engine.execute("""CREATE TABLE IF NOT EXISTS test (
-  id serial,
-  name text
-);""")
-engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
+# #
+# engine.execute("""CREATE TABLE IF NOT EXISTS test (
+#   id serial,
+#   name text
+# );""")
+# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 def rename_keys(row):
   if ('x_coordinates' in row):
@@ -101,6 +101,41 @@ def teardown_request(exception):
 # see for routing: http://flask.pocoo.org/docs/0.10/quickstart/#routing
 # see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
 #
+
+
+
+
+
+
+def construct_single_query(tableName, statName, year):
+  query = ''
+
+  if (tableName=='occupation'):
+    query = "SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, city_avg_wage as size from occupation g, city c, occupation_wages w where w.city_id=c.city_id and w.year={} and g.occupation_id=w.occupation_id and g.occupation_name='{}'".format(year, statName)
+  elif (tableName=='house_rent' or tableName=='house_purchase'):
+    bedroom = statName[0]
+    bathroom = statName[2]
+    statName = ''
+    if (tableName == 'house_rent'):
+      statName = 'rent_price'
+    if (tableName == 'house_purchase'):
+      statName = 'price'
+    print(statName)
+    query = "SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, avg({}) as size from {} g, city c where g.city_id=c.city_id and g.year={} and g.num_bedroom={} and g.num_bathroom={} GROUP BY c.city_id, c.x_coordinates, c.y_coordinates, c.city_name".format(statName, tableName, year, bedroom, bathroom)
+  elif (tableName=='ingredient'):
+    query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, price as size from {} g, city c where g.city_id=c.city_id
+            and g.year={} and g.ingredient_name=\'{}\''''.format(tableName, year, statName)
+  elif (tableName=='food'):
+    query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, price as size from {} g, city c where g.city_id=c.city_id
+            and g.year={} and g.food_name=\'{}\''''.format(tableName, year, statName)
+  else :
+    query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, {} as size
+          from {} g, city c where g.city_id=c.city_id and g.year={}'''.format(statName, tableName, year)
+
+  return query;
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
   """
@@ -115,24 +150,55 @@ def index():
 
   print(request.form)
 
-  cursor = g.conn.execute("SELECT DISTINCT year FROM general_compensation")
+  cursor = g.conn.execute("SELECT DISTINCT year FROM general_compensation order by year desc")
   years = []
   for result in cursor:
     years.append(result[0])  # can also be accessed using result[0]
   
   cursor.close()
-  context = dict(years = years)
+
+  cursor = g.conn.execute("SELECT DISTINCT occupation_name FROM occupation order by occupation_name asc")
+  occupations = []
+  for result in cursor:
+    occupations.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT FORMAT('%%sB%%sB', num_bedroom, num_bathroom) structure from house_purchase")
+  structures = []
+  print(cursor)
+  for result in cursor:
+    structures.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT food_name from food order by food_name")
+  foods = []
+  print(cursor)
+  for result in cursor:
+    foods.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT ingredient_name from ingredient order by ingredient_name")
+  ingredients = []
+  print(cursor)
+  for result in cursor:
+    ingredients.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+
+  context = dict(years = years, occupations=occupations, structures=structures, foods=foods, ingredients=ingredients)
+
 
 
   if request.method == "POST":
     if (request.form['year'] is not None and request.form['year'] is not ''):
         query =  ''
-      
-
-        if (request.form['macrostat'] == 'gross_earning') :
-            query = '''SELECT c.city_id, c.x_coordinates, c.y_coordinates, c.city_name, year, gross_earning as size
-            from general_compensation g, city c WHERE g.city_id=c.city_id'''
-            query = query + " and year={}".format(int(request.form['year']))
+        statNameKey = 'macrostat-{}'.format(request.form['macrostat-table'])
+        query = construct_single_query(request.form['macrostat-table'], request.form[statNameKey], int(request.form['year']))
+        print(query)
 
         if ('macrostat2' in request.form and request.form['macrostat2'] != ''):
             if (request.form['macrostat2'] == 'avg_unemployment_rate'):
