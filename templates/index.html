@@ -62,7 +62,13 @@
   <script src="{{ url_for('static', filename='lib/js/dc.min.js') }}" type="text/javascript"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/drawGraph.js') }}"></script>
   <script type="text/javascript">
-    myVar = drawGraph({{query_data|default("")|tojson}})
+    {%if query_data|length > 0 %}
+    myVar = drawGraph({{query_data|tojson}})
+      
+    {% else %}
+      alert("No Data Available for this year!")
+    {% endif %}
+    
   </script>
 
 
@@ -76,21 +82,131 @@
   <script src="https://cdn.anychart.com/geodata/2.1.1/countries/united_states_of_america/united_states_of_america.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/drawMap.js') }}"></script>
   <script type="text/javascript">
-    myVar = drawMapWithData({{query_data|default("")|tojson}})
+    {%if query_data|length > 0 %}
+    myVar = drawMapWithData({{query_data|tojson}})
+  {% endif %}
   </script>
 
 
   <script type="text/javascript">
     window.addEventListener('load', function () {
+      let current = $("#div-macrostat-selection-occupation");
+      $("#div-macrostat-selection-comp").hide();
+      $("#div-macrostat-selection-emp").hide();
+      $("#div-macrostat-selection-purchase").hide();
+      $("#div-macrostat-selection-rent").hide();
+      $("#div-macrostat-selection-spend").hide();
+      $("#div-macrostat-selection-food").hide();
+      $("#div-macrostat-selection-ingredients").hide();
+      $("#macrostat-selection-table").change(function() {
+          if ($(this).val() == "occupation") {
+            current.hide();
+            $("#div-macrostat-selection-occupation").show();
+            current = $("#div-macrostat-selection-occupation");
+          }
+          if ($(this).val() == "general_compensation") {
+            current.hide();
+            $("#div-macrostat-selection-comp").show();
+            current = $("#div-macrostat-selection-comp");
+          }
+          if ($(this).val() == "employment") {
+            current.hide();
+            $("#div-macrostat-selection-emp").show();
+            current = $("#div-macrostat-selection-emp");
+          }
+          if ($(this).val() == "spending") {
+            current.hide();
+            $("#div-macrostat-selection-spend").show();
+            current = $("#div-macrostat-selection-spend");
+          }
+          if ($(this).val() == "house_purchase") {
+            current.hide();
+            $("#div-macrostat-selection-purchase").show();
+            current = $("#div-macrostat-selection-purchase");
+          }
+          if ($(this).val() == "house_rent") {
+            current.hide();
+            $("#div-macrostat-selection-rent").show();
+            current = $("#div-macrostat-selection-rent");
+          }
+          if ($(this).val() == "food") {
+            current.hide();
+            $("#div-macrostat-selection-food").show();
+            current = $("#div-macrostat-selection-food");
+          }
+          if ($(this).val() == "ingredient") {
+            current.hide();
+            $("#div-macrostat-selection-ingredients").show();
+            current = $("#div-macrostat-selection-ingredients");
+          }
+      })
+
+
+
+    let current2 = $("#div-macrostat-selection-occupation2");
     $('#macrostat-optional-div').hide();
     $("#query-selection").change(function() {
       if ($(this).val() == "single") {
         $('#macrostat-optional-div').hide();
+        current2.hide();
       } else {
         $('#macrostat-optional-div').show();
+        current2.show();
       }
     });
-  });
+
+      $("#div-macrostat-selection-occupation2").hide()
+      $("#div-macrostat-selection-comp2").hide();
+      $("#div-macrostat-selection-emp2").hide();
+      $("#div-macrostat-selection-purchase2").hide();
+      $("#div-macrostat-selection-rent2").hide();
+      $("#div-macrostat-selection-spend2").hide();
+      $("#div-macrostat-selection-food2").hide();
+      $("#div-macrostat-selection-ingredients2").hide();
+      $("#macrostat-selection-table2").change(function() {
+          if ($(this).val() == "occupation2") {
+            current2.hide();
+            $("#div-macrostat-selection-occupation2").show();
+            current2 = $("#div-macrostat-selection-occupation2");
+          }
+          if ($(this).val() == "general_compensation") {
+            current2.hide();
+            $("#div-macrostat-selection-comp2").show();
+            current2 = $("#div-macrostat-selection-comp2");
+          }
+          if ($(this).val() == "employment") {
+            current2.hide();
+            $("#div-macrostat-selection-emp2").show();
+            current2 = $("#div-macrostat-selection-emp2");
+          }
+          if ($(this).val() == "spending") {
+            current2.hide();
+            $("#div-macrostat-selection-spend2").show();
+            current2 = $("#div-macrostat-selection-spend2");
+          }
+          if ($(this).val() == "house_purchase") {
+            current2.hide();
+            $("#div-macrostat-selection-purchase2").show();
+            current2 = $("#div-macrostat-selection-purchase2");
+          }
+          if ($(this).val() == "house_rent") {
+            current2.hide();
+            $("#div-macrostat-selection-rent2").show();
+            current2 = $("#div-macrostat-selection-rent2");
+          }
+          if ($(this).val() == "food") {
+            current2.hide();
+            $("#div-macrostat-selection-food2").show();
+            current2 = $("#div-macrostat-selection-food2");
+          }
+          if ($(this).val() == "ingredient") {
+            current2.hide();
+            $("#div-macrostat-selection-ingredients2").show();
+            current2 = $("#div-macrostat-selection-ingredients2");
+          }
+      })
+
+});
   </script>
 
 
@@ -112,29 +228,180 @@
           <div class="tool year">
             <h5>Year</h5>
             <select name="year" class="form-control" id="year-selection">
-              <option></option>
               {% for year in years %}
               <option value="{{year}}">{{year}}</option>
               {% endfor %}
           </select>
           </div>
           <div class="tool macrostat">
-            <h5>City Statistics</h5>
-            <select name="macrostat" class="form-control" id="macrostat-selection">
-              <option></option>
-              <option value="gross_earning">Gross Earning</option>
-              <option value="employment">Average Unemployment</option>
-              <option value="house_purchase">Average House Price</option>
-              <option value="house_rent">Average Rent</option>
+            <h5>Select Table</h5>
+            <select name="macrostat-table" class="form-control" id="macrostat-selection-table">
+              <option value="occupation">Occupation</option>
+              <option value="general_compensation">Compensation</option>
+              <option value="employment">Employment</option>
+              <option value="spending">Spending</option>
+              <option value="house_purchase">House Purchase Price</option>
+              <option value="house_rent">House Rent Price</option>
+              <option value="food">Food</option>
+              <option value="ingredient">Ingredient</option>
             </select>
           </div>
-          <div class="tool macrostat2" id="macrostat-optional-div">
-            <h5>City Statistics2</h5>
-            <select name="macrostat2" class="form-control" id="macrostat-selection2">
-              <option></option>
+
+          <div class="tool macrostat" id="div-macrostat-selection-occupation">
+            <h5>Occupation</h5>
+            <select name="macrostat-occupation" class="form-control" id="macrostat-selection-occupation">
+              {% for occupation in occupations %}
+              <option value="{{occupation}}">{{occupation}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-comp">
+            <h5>Compensation Stat</h5>
+            <select name="macrostat-general_compensation" class="form-control" id="macrostat-selection-comp">
+              <option value="employment_cost_index">Employment Cost Index</option>
+              <option value="gross_earning">Gross Earning</option>
+              <option value="average_earning">Average Earning</option>
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-emp">
+            <h5>Employment Stat</h5>
+            <select name="macrostat-employment" class="form-control" id="macrostat-selection-emp">
               <option value="avg_unemployment_rate">Average Unemployment Rate</option>
             </select>
           </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-spend">
+            <h5>Consumer Spending</h5>
+            <select name="macrostat-spending" class="form-control" id="macrostat-selection-spend">
+              <option value="avg_consumer_spending">Average Consumer Spending</option>
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-purchase">
+            <h5>Average Purchase Price For:</h5>
+            <select name="macrostat-house_purchase" class="form-control" id="macrostat-selection-purchase">
+              {% for structure in structures %}
+              <option value="{{structure}}">{{structure}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-rent">
+            <h5>Average Rent Price For:</h5>
+            <select name="macrostat-house_rent" class="form-control" id="macrostat-selection-rent">
+              {% for structure in structures %}
+              <option value="{{structure}}">{{structure}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-food">
+            <h5>Food Price For:</h5>
+            <select name="macrostat-food" class="form-control" id="macrostat-selection-food">
+              {% for food in foods %}
+              <option value="{{food}}">{{food}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-ingredients">
+            <h5>Ingredient Price for:</h5>
+            <select name="macrostat-ingredient" class="form-control" id="macrostat-selection-ingredients">
+              {% for ingredient in ingredients %}
+              <option value="{{ingredient}}">{{ingredient}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+
+          <div class="tool macrostat2" id="macrostat-optional-div">
+            <h5>Select Table</h5>
+            <select name="macrostat-table2" class="form-control" id="macrostat-selection-table2">
+              <option value="occupation">Occupation</option>
+              <option value="general_compensation">Compensation</option>
+              <option value="employment">Employment</option>
+              <option value="spending">Spending</option>
+              <option value="house_purchase">House Purchase Price</option>
+              <option value="house_rent">House Rent Price</option>
+              <option value="food">Food</option>
+              <option value="ingredient">Ingredient</option>
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-occupation2">
+            <h5>Occupation</h5>
+            <select name="macrostat-occupation2" class="form-control" id="macrostat-selection-occupation2">
+              {% for occupation in occupations %}
+              <option value="{{occupation}}">{{occupation}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-comp2">
+            <h5>Compensation Stat</h5>
+            <select name="macrostat-general_compensation2" class="form-control" id="macrostat-selection-comp2">
+              <option value="employment_cost_index">Employment Cost Index</option>
+              <option value="gross_earning">Gross Earning</option>
+              <option value="average_earning">Average Earning</option>
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-emp2">
+            <h5>Employment Stat</h5>
+            <select name="macrostat-employment2" class="form-control" id="macrostat-selection-emp2">
+              <option value="avg_unemployment_rate">Average Unemployment Rate</option>
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-spend2">
+            <h5>Consumer Spending</h5>
+            <select name="macrostat-spending2" class="form-control" id="macrostat-selection-spend2">
+              <option value="avg_consumer_spending">Average Consumer Spending</option>
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-purchase2">
+            <h5>Average Purchase Price For:</h5>
+            <select name="macrostat-house_purchase2" class="form-control" id="macrostat-selection-purchase2">
+              {% for structure in structures %}
+              <option value="{{structure}}">{{structure}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-rent2">
+            <h5>Average Rent Price For:</h5>
+            <select name="macrostat-house_rent2" class="form-control" id="macrostat-selection-rent2">
+              {% for structure in structures %}
+              <option value="{{structure}}">{{structure}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-food2">
+            <h5>Food Price For:</h5>
+            <select name="macrostat-food2" class="form-control" id="macrostat-selection-food2">
+              {% for food in foods %}
+              <option value="{{food}}">{{food}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-ingredients2">
+            <h5>Ingredient Price for:</h5>
+            <select name="macrostat-ingredient2" class="form-control" id="macrostat-selection-ingredients2">
+              {% for ingredient in ingredients %}
+              <option value="{{ingredient}}">{{ingredient}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+
+
+
+
           <!-- <div class="tool timeframe">
             <h5>Start time</h5>
             <input type="date" id="timeframe-start" class="form-control" placeholder="mm/dd/yyyy">

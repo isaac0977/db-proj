@@ -1,6 +1,4 @@
 function drawGraph(data){
-
-	if (data !== "") {
 		console.log(data)
 		window.addEventListener('load', function () {
 		var chart = dc.rowChart("#chart-01");
@@ -27,6 +25,6 @@ function drawGraph(data){
 
 
 	})
-	}
+
 	
 }
