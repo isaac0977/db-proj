@@ -2,13 +2,10 @@ TODO
 
 UI Side -
 
-1. Add a sidebar with rankings
-2. Change map to use https://docs.anychart.com/Maps/Proportional_Symbol_Map instead
-3. Add ability to compare two stats (needs a dynamic form functionality)
+1. Add ability to compare two stats 
 
 
 
 Database Side -
 
-1. Update coordinates according to the Anymap doc
 2. Populate more data
