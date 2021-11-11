@@ -101,42 +101,68 @@
       $("#macrostat-selection-table").change(function() {
           if ($(this).val() == "occupation") {
             current.hide();
-            $("#div-macrostat-selection-occupation").show();
+            $("#div-macrostat-selection-occupation select").show();
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", true);
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", true);
+
+
             current = $("#div-macrostat-selection-occupation");
           }
           if ($(this).val() == "general_compensation") {
             current.hide();
             $("#div-macrostat-selection-comp").show();
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", true);
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", true);
+
             current = $("#div-macrostat-selection-comp");
           }
           if ($(this).val() == "employment") {
             current.hide();
             $("#div-macrostat-selection-emp").show();
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", true);
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", true);
+
             current = $("#div-macrostat-selection-emp");
           }
           if ($(this).val() == "spending") {
             current.hide();
             $("#div-macrostat-selection-spend").show();
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", true);
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", true);
+            
+
             current = $("#div-macrostat-selection-spend");
           }
           if ($(this).val() == "house_purchase") {
             current.hide();
             $("#div-macrostat-selection-purchase").show();
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", true);
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", true);
+
             current = $("#div-macrostat-selection-purchase");
           }
           if ($(this).val() == "house_rent") {
             current.hide();
             $("#div-macrostat-selection-rent").show();
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", true);
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", true);
+
             current = $("#div-macrostat-selection-rent");
           }
           if ($(this).val() == "food") {
             current.hide();
             $("#div-macrostat-selection-food").show();
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", false);
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", true);
+
             current = $("#div-macrostat-selection-food");
           }
           if ($(this).val() == "ingredient") {
             current.hide();
             $("#div-macrostat-selection-ingredients").show();
+            $("#macrostat-selection-table2 option[value=ingredient]").attr("disabled", true);
+            $("#macrostat-selection-table2 option[value=food]").attr("disabled", false);
+
             current = $("#div-macrostat-selection-ingredients");
           }
       })
@@ -161,8 +187,15 @@
       $("#div-macrostat-selection-purchase2").hide();
       $("#div-macrostat-selection-rent2").hide();
       $("#div-macrostat-selection-spend2").hide();
-      $("#div-macrostat-selection-food2").hide();
-      $("#div-macrostat-selection-ingredients2").hide();
+      $("#div-macrostat-selection-panko").hide();
+      $("#div-macrostat-selection-thighs").hide();
+      $("#div-macrostat-selection-breast").hide();
+      $("#div-macrostat-selection-beef").hide();
+      $("#div-macrostat-selection-lettuce").hide();
+      $("#div-macrostat-selection-orange").hide();
+      $("#div-macrostat-selection-nuggs").hide();
+      $("#div-macrostat-selection-wrap").hide();
+      $("#div-macrostat-selection-salad").hide();
       $("#macrostat-selection-table2").change(function() {
           if ($(this).val() == "occupation2") {
             current2.hide();
@@ -197,6 +230,7 @@
           if ($(this).val() == "food") {
             current2.hide();
             $("#div-macrostat-selection-food2").show();
+
             current2 = $("#div-macrostat-selection-food2");
           }
           if ($(this).val() == "ingredient") {
@@ -325,8 +359,8 @@
               <option value="spending">Spending</option>
               <option value="house_purchase">House Purchase Price</option>
               <option value="house_rent">House Rent Price</option>
-              <option value="food">Food</option>
-              <option value="ingredient">Ingredient</option>
+              <option value="food" disabled>Food</option>
+              <option value="ingredient" disabled>Ingredient</option>
             </select>
           </div>
 
@@ -380,36 +414,87 @@
             </select>
           </div>
 
-          <div class="tool macrostat" id="div-macrostat-selection-food2">
+          <div class="tool macrostat" id="div-macrostat-selection-panko">
             <h5>Food Price For:</h5>
-            <select name="macrostat-food2" class="form-control" id="macrostat-selection-food2">
-              {% for food in foods %}
+            <select name="macrostat-food2-panko" class="form-control" id="macrostat-selection-panko">
+              {% for food in panko %}
               <option value="{{food}}">{{food}}</option>
               {% endfor %}
             </select>
           </div>
 
-          <div class="tool macrostat" id="div-macrostat-selection-ingredients2">
+          <div class="tool macrostat" id="div-macrostat-selection-lettuce">
+            <h5>Food Price For:</h5>
+            <select name="macrostat-food2-lettuce" class="form-control" id="macrostat-selection-lettuce">
+              {% for food in lettuce %}
+              <option value="{{food}}">{{food}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-beef">
+            <h5>Food Price For:</h5>
+            <select name="macrostat-food2-beef" class="form-control" id="macrostat-selection-beef">
+              {% for food in beef %}
+              <option value="{{food}}">{{food}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-breast">
+            <h5>Food Price For:</h5>
+            <select name="macrostat-food2-breast" class="form-control" id="macrostat-selection-breast">
+              {% for food in breast %}
+              <option value="{{food}}">{{food}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-thighs">
+            <h5>Food Price For:</h5>
+            <select name="macrostat-food2-thighs" class="form-control" id="macrostat-selection-thighs">
+              {% for food in thighs %}
+              <option value="{{food}}">{{food}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="tool macrostat" id="div-macrostat-selection-wrap">
             <h5>Ingredient Price for:</h5>
-            <select name="macrostat-ingredient2" class="form-control" id="macrostat-selection-ingredients2">
-              {% for ingredient in ingredients %}
+            <select name="macrostat-ingredient2-wrap" class="form-control" id="macrostat-selection-wrap">
+              {% for ingredient in wrap %}
+              <option value="{{ingredient}}">{{ingredient}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-salad">
+            <h5>Ingredient Price for:</h5>
+            <select name="macrostat-ingredient2-salad" class="form-control" id="macrostat-selection-salad">
+              {% for ingredient in salad %}
+              <option value="{{ingredient}}">{{ingredient}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-nuggs">
+            <h5>Ingredient Price for:</h5>
+            <select name="macrostat-ingredient2-nuggs" class="form-control" id="macrostat-selection-nuggs">
+              {% for ingredient in nuggs %}
+              <option value="{{ingredient}}">{{ingredient}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="tool macrostat" id="div-macrostat-selection-orange">
+            <h5>Ingredient Price for:</h5>
+            <select name="macrostat-ingredient2-orange" class="form-control" id="macrostat-selection-orange">
+              {% for ingredient in orange %}
               <option value="{{ingredient}}">{{ingredient}}</option>
               {% endfor %}
             </select>
           </div>
 
 
-
-
-
-          <!-- <div class="tool timeframe">
-            <h5>Start time</h5>
-            <input type="date" id="timeframe-start" class="form-control" placeholder="mm/dd/yyyy">
-          </div>
-          <div class="tool timeframe">
-            <h5>End time</h5>
-            <input type="date" id="timeframe-end" class="form-control" placeholder="mm/dd/yyyy">
-          </div> -->
           <div class="tool">
             <h5>Credit: Keen IO</h5>
             <!-- <button id="refresh" class="btn btn-primary btn-block">Refresh</button> -->
@@ -424,18 +509,6 @@
       <div id="chart-01" class="app-sidebar-chart"></div>
     </div>
 
-<!--         <div class="row">
-
-            <div class="chart-wrapper">
-              <div class="chart-title">
-                Map
-              </div>
-              <div class="chart-stage">
-                <div id="map"></div>
-              </div>
-            </div>
-
-        </div> -->
 
   </div>
 

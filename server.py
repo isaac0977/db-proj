@@ -31,7 +31,8 @@ DATABASEURI = "postgresql://is2661:7399@35.196.73.133/proj1part2"
 #
 engine = create_engine(DATABASEURI)
 
-
+def rename_food(name):
+  return name
 
 def rename_keys(row):
   if ('x_coordinates' in row):
@@ -132,30 +133,101 @@ def index():
 
   cursor = g.conn.execute("SELECT DISTINCT FORMAT('%%sB%%sB', num_bedroom, num_bathroom) structure from house_purchase")
   structures = []
-  print(cursor)
+  
   for result in cursor:
     structures.append(result[0])  # can also be accessed using result[0]
   
   cursor.close()
 
-  cursor = g.conn.execute("SELECT DISTINCT food_name from food order by food_name")
+  cursor = g.conn.execute("SELECT food_name from food_name order by food_name")
   foods = []
-  print(cursor)
+  
   for result in cursor:
     foods.append(result[0])  # can also be accessed using result[0]
   
   cursor.close()
 
-  cursor = g.conn.execute("SELECT DISTINCT ingredient_name from ingredient order by ingredient_name")
+  cursor = g.conn.execute("SELECT ingredient_name from ingredient_name order by ingredient_name")
   ingredients = []
-  print(cursor)
+  
   for result in cursor:
     ingredients.append(result[0])  # can also be accessed using result[0]
   
   cursor.close()
 
+  cursor = g.conn.execute("SELECT DISTINCT ingredient_name from ingredient_creates_food c where c.food_name='Chicken Nuggets 6 Pieces'")
+  nuggs = []
+  
+  for result in cursor:
+    nuggs.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
 
-  context = dict(years = years, occupations=occupations, structures=structures, foods=foods, ingredients=ingredients)
+  cursor = g.conn.execute("SELECT DISTINCT ingredient_name from ingredient_creates_food c where c.food_name='Chicken Ceasar'")  
+  salad = []
+  
+  for result in cursor:
+    salad.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT ingredient_name from ingredient_creates_food c where c.food_name='Orange Chicken'")  
+  orange = []
+  
+  for orange in cursor:
+    orange.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT ingredient_name from ingredient_creates_food c where c.food_name='Crunch Wrap Supreme")  
+  wrap = []
+  
+  for result in cursor:
+    wrap.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT food_name from ingredient_creates_food c where c.ingredient_name='Panko'")  
+  panko = []
+  
+  for result in cursor:
+    panko.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT food_name from ingredient_creates_food c where c.ingredient_name='Chicken Thighs'")  
+  thighs = []
+  
+  for result in cursor:
+    thighs.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT food_name from ingredient_creates_food c where c.ingredient_name='Chicken Breast'")  
+  breast = []
+  
+  for result in cursor:
+    breast.append(result[0])  # can also be accessed using result[0]
+  
+  breast.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT food_name from ingredient_creates_food c where c.ingredient_name='Ground Beef'")  
+  beef = []
+  
+  for result in cursor:
+    beef.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT food_name from ingredient_creates_food c where c.ingredient_name='Lettuce'")  
+  lettuce = []
+  
+  for result in cursor:
+    lettuce.append(result[0])  # can also be accessed using result[0]
+  
+  cursor.close()
+
+  context = dict(years = years, occupations=occupations, structures=structures, foods=foods, ingredients=ingredients, lettuce=lettuce, beef=beef, breast=breast, thighs=thighs, panko=panko, wrap=wrap, salad=salad, orange=orange, nuggs=nuggs)
 
 
 
@@ -167,7 +239,11 @@ def index():
         print(query)
 
         if (request.form['queryType'] == 'multi'):
-            statNameKey2 = 'macrostat-{}'.format(request.form['macrostat-table2'])
+            stateNameKey2 = ''
+            if (request.form['macrostat-table2'] == 'ingredient' or request.form['macrostat-table2'] == 'food'):
+              statNameKey2 = 'macrostat-{}2-{}'.format(request.form['macrostat-table2'], rename_food(request.form[statNameKey]))
+            else:
+              statNameKey2 = 'macrostat-{}2'.format(request.form['macrostat-table2'])
             query = construct_multi_query(request.form['macrostat-table'], request.form['macrostat-table2'], request.form[statNameKey], request.form[statNameKey2], int(request.form['year']))
 
         
