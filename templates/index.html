@@ -86,7 +86,12 @@
     myVar = drawMapWithData({{query_data|tojson}})
   {% endif %}
   </script>
-
+  <script type="text/javascript">
+    console.log("Foods made with Chicken Breast:")
+    {% for food in breast %}
+      console.log("{{food}}")
+    {% endfor %}
+  </script>
 
   <script type="text/javascript">
     window.addEventListener('load', function () {
